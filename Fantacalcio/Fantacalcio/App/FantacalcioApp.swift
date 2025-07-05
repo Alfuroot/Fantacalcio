@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct FantacalcioApp: App {
+
+    @StateObject internal var navigator = Navigator.current
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            navigator.createMainRoute()
         }
     }
 }
