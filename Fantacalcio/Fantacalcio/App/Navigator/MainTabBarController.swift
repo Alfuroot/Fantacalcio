@@ -92,10 +92,6 @@ class MainTabBarController: UITabBarController {
 		let favouritesHostingNavigation = UINavigationController(rootViewController: favourites)
         favouritesHostingNavigation.tabBarItem = UITabBarItem(title: "Preferiti", image: UIImage(named: "favouritesIcon"), tag: 1)
 		viewControllers.append(favouritesHostingNavigation)
-
-        for (index, vc) in viewControllers.enumerated() {
-            print("VC[\(index)] is \(type(of: vc))")
-        }
         
         self.setViewControllers(viewControllers, animated: true)
     }

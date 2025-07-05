@@ -9,7 +9,8 @@ import SwiftUI
 
 extension DashboardView {
     static func create() -> UIViewController {
-        let view = DashboardView()
+        let viewModel = DashboardViewModel()
+        let view = DashboardView(viewModel: viewModel)
         
         return UIHostingController(rootView: view)
     }
