@@ -26,11 +26,14 @@ public protocol Cache {
 
 public enum CacheKey {
     case players
+    case banners
 
     var key: String {
         switch self {
             case .players:
                 "players"
+            case .banners:
+                "banners"
         }
     }
 }
