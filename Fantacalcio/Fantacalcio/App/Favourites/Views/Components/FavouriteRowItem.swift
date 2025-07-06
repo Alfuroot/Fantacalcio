@@ -2,16 +2,22 @@
 //  DashboardRowItem.swift
 //  Fantacalcio
 //
+//  Created by Giuseppe Carannante on 06/07/2025.
+//
+
+
+//
+//  DashboardRowItem.swift
+//  Fantacalcio
+//
 //  Created by Giuseppe Carannante on 04/07/2025.
 //
 
 import SwiftUI
 
-struct DashboardRowItem: View {
+struct FavouriteRowItem: View {
     let player: Player
-    @Binding var isFavorite: Bool
-    let toggleFavorite: () -> Void
-    
+
     var body: some View {
         HStack {
             AsyncImage(url: URL(string: player.imageURL)) { image in
@@ -31,29 +37,39 @@ struct DashboardRowItem: View {
             )
             .padding(.leading, 16)
             .padding([.trailing, .top, .bottom], 8)
-            
+
             VStack(alignment: .leading) {
                 Text(player.playerName)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(Color.darkBlueFanta)
                     .tracking(0.5)
                     .padding(.bottom, 4)
-                
+
                 Text(player.teamAbbreviation)
                     .font(.system(size: 14))
                     .foregroundStyle(Color.darkBlueFanta.opacity(0.7))
                     .tracking(0.5)
             }
-            
+
             Spacer()
             
-            Button(action: toggleFavorite) {
-                Image(systemName: isFavorite ? "star.fill" : "star")
-                    .foregroundColor(isFavorite ? .blue : .darkGrayFanta)
-                    .padding(.trailing, 16)
-                    .imageScale(.large)
-            }
-            .buttonStyle(.plain)
+            Text("\(player.gamesPlayed)")
+                .font(.system(size: 14))
+                .foregroundStyle(Color.darkBlueFanta.opacity(0.7))
+                .tracking(0.5)
+                .padding(.trailing, 8)
+
+            Text(String(format: "%.2f", player.averageGrade))
+                .font(.system(size: 14))
+                .foregroundStyle(Color.darkBlueFanta.opacity(0.7))
+                .tracking(0.5)
+                .padding(.trailing, 8)
+
+            Text(String(format: "%.2f", player.averageFantaGrade))
+                .font(.system(size: 14))
+                .foregroundStyle(Color.darkBlueFanta.opacity(0.7))
+                .tracking(0.5)
+                .padding(.trailing, 16)
         }
         .frame(height: 70)
         .background(

@@ -8,17 +8,31 @@
 import SwiftUI
 
 struct SponsorNavigationView<Content: View>: View {
+    let currentSection: MainRoot
     let bannerImageUrl: URL?
     let tapAction: (() -> Void)?
     let bannerHeight: CGFloat
     let content: Content
 
+    private var fallbackImage: Image {
+        switch currentSection {
+            case .favourites:
+                return Image("Fav-Default")
+            case .dashboard:
+                return Image("List-Default")
+            default:
+                return Image("List-Default")
+        }
+    }
+
     init(
+        currentSection: MainRoot = .dashboard,
         bannerImageUrl: URL?,
         tapAction: (() -> Void)? = nil,
         bannerHeight: CGFloat = 200,
         @ViewBuilder content: () -> Content
     ) {
+        self.currentSection = currentSection
         self.bannerImageUrl = bannerImageUrl
         self.tapAction = tapAction
         self.bannerHeight = bannerHeight
@@ -27,13 +41,15 @@ struct SponsorNavigationView<Content: View>: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if let imageUrl = bannerImageUrl {
-                AsyncImage(url: imageUrl) { phase in
+                AsyncImage(url: bannerImageUrl) { phase in
                     switch phase {
                     case .empty:
-                        ProgressView()
+                        fallbackImage
+                            .resizable()
+                            .scaledToFill()
                             .frame(height: bannerHeight)
                             .frame(maxWidth: .infinity)
+                            .clipped()
                     case .success(let image):
                         image
                             .resizable()
@@ -45,21 +61,22 @@ struct SponsorNavigationView<Content: View>: View {
                                 tapAction?()
                             }
                     case .failure:
-                        Color.gray
+                        fallbackImage
+                            .resizable()
+                            .scaledToFill()
                             .frame(height: bannerHeight)
                             .frame(maxWidth: .infinity)
+                            .clipped()
                     @unknown default:
-                        Color.gray
+                        fallbackImage
+                            .resizable()
+                            .scaledToFill()
                             .frame(height: bannerHeight)
                             .frame(maxWidth: .infinity)
+                            .clipped()
                     }
                 }
                 .padding(.bottom, 16)
-            } else {
-                Color.gray
-                    .frame(height: bannerHeight)
-                    .frame(maxWidth: .infinity)
-            }
 
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

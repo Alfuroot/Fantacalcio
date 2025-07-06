@@ -10,7 +10,7 @@ import SwiftUI
 struct DashboardView: View {
     @StateObject private var viewModel: DashboardViewModel
     @State private var sponsor: Sponsor?
-
+    
     init(viewModel: DashboardViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -34,22 +34,31 @@ struct DashboardView: View {
                         .textInputAutocapitalization(.never)
                 }
                 .padding(10)
-                .background(Color(.systemGray6))
+                .background(Color.lightGrayFanta)
                 .cornerRadius(10)
                 .padding(.horizontal, 16)
-
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        ForEach(viewModel.filteredPlayers) { player in
-                            DashboardRowItem(
-                                player: player,
-                                isFavorite: .constant(viewModel.isFavorite(player)),
-                                toggleFavorite: { viewModel.toggleFavorite(player) }
-                            )
+                
+                if !viewModel.filteredPlayers.isEmpty {
+                    ScrollView {
+                        LazyVStack(spacing: 8) {
+                            ForEach(viewModel.filteredPlayers) { player in
+                                DashboardRowItem(
+                                    player: player,
+                                    isFavorite: .constant(viewModel.isFavorite(player)),
+                                    toggleFavorite: { viewModel.toggleFavorite(player) }
+                                )
+                            }
                         }
+                        .padding(.top, 0)
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.top, 0)
-                    .padding(.horizontal, 16)
+                } else {
+                    Spacer()
+                    Text("La ricerca non ha prodotto risultati")
+                        .font(.system(size: 17, weight: .regular))
+                        .foregroundStyle(Color.darkGrayFanta)
+                        .tracking(0.5)
+                    Spacer()
                 }
             }
         }

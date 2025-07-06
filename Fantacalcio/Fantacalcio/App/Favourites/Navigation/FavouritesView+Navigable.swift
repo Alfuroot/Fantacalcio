@@ -9,8 +9,9 @@ import SwiftUI
 
 extension FavouritesView {
     static func create() -> UIViewController {
-        let view = FavouritesView()
-        
+        let viewModel = FavouritesViewModel()
+        let view = FavouritesView(viewModel: viewModel)
+
         return UIHostingController(rootView: view)
     }
 }
