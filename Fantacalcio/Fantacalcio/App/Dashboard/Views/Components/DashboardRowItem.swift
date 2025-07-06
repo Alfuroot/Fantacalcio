@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DashboardRowItem: View {
     let player: Player
+    @Binding var isFavorite: Bool
+    let toggleFavorite: () -> Void
 
     var body: some View {
         HStack {
@@ -43,6 +45,14 @@ struct DashboardRowItem: View {
             }
 
             Spacer()
+            
+            Button(action: toggleFavorite) {
+                Image(systemName: isFavorite ? "star.fill" : "star")
+                    .foregroundColor(isFavorite ? .blue : .darkGrayFanta)
+                    .padding(.trailing, 16)
+                    .imageScale(.large)
+            }
+            .buttonStyle(.plain)
         }
         .frame(height: 70)
         .background(

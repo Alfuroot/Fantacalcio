@@ -12,6 +12,8 @@ final class DashboardViewModel: ObservableObject {
     @Published var players: [Player] = []
     @Published var searchText: String = ""
     
+    @Published private(set) var favoritePlayerIds: Set<Int> = []
+
     private let playerService: PlayerServiceProtocol  = PlayerService()
     
     @Published var sponsorsBySection: [String: [Sponsor]] = [:]
@@ -19,6 +21,29 @@ final class DashboardViewModel: ObservableObject {
 
     private let sponsorService: SponsorServiceProtocol = SponsorService()
     
+    var filteredPlayers: [Player] {
+        let filtered = searchText.isEmpty ? players : players.filter {
+            $0.playerName.localizedCaseInsensitiveContains(searchText)
+        }
+        
+        return filtered.sorted { p1, p2 in
+            let p1Fav = isFavorite(p1)
+            let p2Fav = isFavorite(p2)
+            
+            if p1Fav != p2Fav {
+                return p1Fav && !p2Fav
+            } else if p1.teamAbbreviation != p2.teamAbbreviation {
+                return p1.teamAbbreviation < p2.teamAbbreviation
+            } else {
+                return p1.playerName < p2.playerName
+            }
+        }
+    }
+
+    init() {
+        loadFavorites()
+    }
+
     func fetchPlayers() async {
         do {
             let result = try await playerService.fetchPlayers()
@@ -28,13 +53,28 @@ final class DashboardViewModel: ObservableObject {
         }
     }
     
-    var filteredPlayers: [Player] {
-        guard !searchText.isEmpty else { return players }
-        return players.filter {
-            $0.playerName.localizedCaseInsensitiveContains(searchText)
-        }
+    private func loadFavorites() {
+        let saved = UserDefaults.standard.array(forKey: "favouritePlayerIds") as? [Int] ?? []
+        favoritePlayerIds = Set(saved)
     }
-    
+
+    private func saveFavorites() {
+        UserDefaults.standard.set(Array(favoritePlayerIds), forKey: "favouritePlayerIds")
+    }
+
+    func isFavorite(_ player: Player) -> Bool {
+        favoritePlayerIds.contains(player.playerId)
+    }
+
+    func toggleFavorite(_ player: Player) {
+        if favoritePlayerIds.contains(player.playerId) {
+            favoritePlayerIds.remove(player.playerId)
+        } else {
+            favoritePlayerIds.insert(player.playerId)
+        }
+        saveFavorites()
+    }
+
     func fetchSponsors() async {
         do {
             let responses = try await sponsorService.fetchSponsors()

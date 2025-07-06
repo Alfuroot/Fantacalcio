@@ -41,7 +41,11 @@ struct DashboardView: View {
                 ScrollView {
                     LazyVStack(spacing: 8) {
                         ForEach(viewModel.filteredPlayers) { player in
-                            DashboardRowItem(player: player)
+                            DashboardRowItem(
+                                player: player,
+                                isFavorite: .constant(viewModel.isFavorite(player)),
+                                toggleFavorite: { viewModel.toggleFavorite(player) }
+                            )
                         }
                     }
                     .padding(.top, 0)
